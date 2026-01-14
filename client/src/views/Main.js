@@ -79,22 +79,10 @@ const Main = props => {
                                     <i>
                                         Language is art!
                                     </i>
+                                    Query a word, phrase, suffix, prefix or colloquialism above to get started!
                                 </strong>
                             </p>
                             <WotdCard envUrl={envUrl} />
-                            <p className="cdInstructions">
-                                <strong>
-                                    <i>
-                                        ^ ***** ******** ***** ^
-                                        <br />
-                                        <br />
-                                        Query a word, phrase, suffix, prefix or colloquialism above to get started!
-                                        <br />
-                                        <br />
-                                        ^ *** ******* *********** ******* *** ^
-                                    </i>
-                                </strong>
-                            </p>
                         </div>
                     </div>
                 </div>

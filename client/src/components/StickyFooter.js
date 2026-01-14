@@ -36,7 +36,7 @@ const StickyFooter = () => {
                     xs={6}
                 >
                     <Link
-                        href="http://github.com/relativelyIntuitive/CarpeDiction"
+                        href="http://github.com/TonicMedia/CarpeDiction"
                         target="_blank"
                     >
                         <img
@@ -48,7 +48,7 @@ const StickyFooter = () => {
                         />
                     </Link>
                     <Link
-                        href="http://www.linkedin.com/in/relativelyIntuitive"
+                        href="http://www.linkedin.com/in/TonicMedia"
                         target="_blank"
                     >
                         <img
@@ -59,8 +59,8 @@ const StickyFooter = () => {
                             alt="LinkedIn!"
                         />
                     </Link>
-                    <Link
-                        href="http://www.instagram.com/zeebo_rowte/"
+                    {/* <Link
+                        href="http://www.instagram.com/"
                         target="_blank"
                     >
                         <img
@@ -70,7 +70,7 @@ const StickyFooter = () => {
                             className="d-inline-block align-top socialIcon"
                             alt="InstaGram!"
                         />
-                    </Link>
+                    </Link> */}
                 </Grid>
             </Grid>
         </footer>
