@@ -27,7 +27,12 @@
     "@types/react": "^16.9.0",
     "css-loader": "^5.2.7",
     "style-loader": "^2.0.0",
-    "webpack": "^5.0.0"
+    "webpack": "^5.0.0",
+    "@babel/core": "^7.28.0",
+    "@types/node": "^18.0.0",
+    "tslib": "^2.6.0",
+    "typescript": "^4.9.0",
+    "jquery": "^3.6.0"
   },
   "scripts": {
     "start": "craco start",
@@ -36,8 +41,16 @@
     "eject": "react-scripts eject"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
-    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "engines": {
     "node": ">=14.0.0"
@@ -46,6 +59,7 @@
     "jsonpath": "^1.2.0",
     "nth-check": "^2.0.1",
     "postcss": "^8.4.31",
-    "webpack-dev-server": "5.2.1"
+    "webpack-dev-server": "5.2.1",
+    "**/webpack-dev-server": "5.2.1"
   }
 }

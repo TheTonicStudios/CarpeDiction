@@ -86,6 +86,14 @@ const Register = props => {
                         errorArr.push('Registration failed. Please check your entries.');
                     }
                 }
+                // Clear console log for debugging (status + server messages)
+                try {
+                    if (typeof console !== 'undefined' && console.warn) {
+                        const status = err.response?.status ?? 'network error';
+                        const summary = errorArr.length ? errorArr.join(' · ') : err.response?.data?.message || err.message;
+                        console.warn(`[register] ${status} ${err.config?.url ?? ''} → ${summary}`);
+                    }
+                } catch (_) {}
                 setErrors(errorArr);
             });
     };
