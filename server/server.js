@@ -100,6 +100,9 @@ dbReady
             console.log(`Listening on ${bound}`);
             const url = process.env.API_ROOT || (addr && (addr.address === '0.0.0.0' || addr.address === '::') ? `http://localhost:${addr.port}` : `http://${bound}`);
             console.log(`URL: ${url}`);
+            // Scrape WOTD once on startup, then every hour
+            getWotd();
+            setInterval(getWotd, 3600000);
         });
     })
     .catch(() => {
@@ -108,29 +111,19 @@ dbReady
     });
 
 
-// scrapes a random WOTD every 24 hours and saves it to the db
-setInterval(
-    function getWotd() {
-        const Wotd = {};
-
-        // axios.get('http://randomword.com/')
-        axios.get('https://www.merriam-webster.com/word-of-the-day')
-            .then(res => {
-                const html = res.data;
-                const $ = cheerio.load(html);
-                // Wotd.word = $('#random_word').text().trim();
-                // Wotd.def = $('#random_word_definition').text().trim();
-                Wotd.word = $("h1:first").text().trim();
-                Wotd.def = "";
-                console.log(Wotd);
-                axios.post(`${process.env.API_ROOT}/api/wotd/add`, Wotd)
-                    .then(res => console.log(res.data))
-                    .catch(err => console.log(err));
-            })
-            .catch(err => console.log(err));
-    },
-    // repeat every 24 hours (expressed in ms)
-    // 86400000
-    // repeat every hour for MW (expressed in ms)
-    3600000
-)
+// Scrapes WOTD and saves to the db (used on startup and on interval)
+function getWotd() {
+    const Wotd = {};
+    axios.get('https://www.merriam-webster.com/word-of-the-day')
+        .then(res => {
+            const html = res.data;
+            const $ = cheerio.load(html);
+            Wotd.word = $("h1:first").text().trim();
+            Wotd.def = "";
+            console.log(Wotd);
+            axios.post(`${process.env.API_ROOT}/api/wotd/add`, Wotd)
+                .then(res => console.log(res.data))
+                .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+}
