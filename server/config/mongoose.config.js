@@ -26,12 +26,9 @@ function encodeMongoUri(uri) {
 const uri = encodeMongoUri(rawUri) || "mongodb://localhost:27017/carpediction";
 
 // configures the Mongoose connection to the MongoDB
+mongoose.set('strictQuery', true);
 mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 15000,
-    bufferCommands: true,
-    bufferTimeoutMS: 30000,
 })
     .then(() => console.log("Established a connection to the database"))
     .catch(err => {
