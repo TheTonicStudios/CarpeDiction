@@ -51,6 +51,28 @@ console.log(`Server Type: ${process.env.NODE_ENV}`)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Block common bots and crawlers in production (User-Agent–based)
+const BOT_UA_PATTERNS = [
+    /bot/i, /crawl/i, /spider/i, /slurp/i, /scrapy/i, /curl/i, /wget/i,
+    /python-requests/i, /python\/3/i, /java\//i, /go-http/i, /axios/i,
+    /^node\s/i, /headless/i, /phantom/i, /selenium/i, /puppeteer/i,
+    /googlebot/i, /bingbot/i, /yandexbot/i, /duckduckbot/i, /baiduspider/i,
+    /facebookexternalhit/i, /twitterbot/i, /linkedinbot/i, /slackbot/i,
+    /applebot/i, /petalbot/i, /ahrefsbot/i, /semrushbot/i, /dotbot/i,
+];
+function isLikelyBot(req) {
+    const ua = req.get('user-agent') || '';
+    if (!ua.trim()) return true; // no UA often indicates scripts/bots
+    return BOT_UA_PATTERNS.some(pat => pat.test(ua));
+}
+app.use((req, res, next) => {
+    if (process.env.NODE_ENV === 'production' && isLikelyBot(req)) {
+        res.status(403).send('Forbidden');
+        return;
+    }
+    next();
+});
+
 // Safely log all HTTP requests (no auth headers, cookies, or body)
 const SENSITIVE_QUERY_KEYS = ['token', 'key', 'secret', 'password', 'auth', 'cookie'];
 function safePath(url) {
