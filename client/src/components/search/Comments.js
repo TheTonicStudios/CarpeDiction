@@ -64,28 +64,38 @@ const Comments = props => {
 
     // retrieves all comments
     useEffect(() => {
-        axios.get(`${envUrl}/api/comments/retrieve/${query.replace(/\//g, '%2F')}`)
+        const controller = new AbortController();
+        axios.get(`${envUrl}/api/comments/retrieve/${query.replace(/\//g, '%2F')}`, {
+            signal: controller.signal,
+        })
             .then(res => {
                 setComments(res.data.comments ?? []);
                 setAllLoaded(true);
             })
-            .catch(() => {
+            .catch((err) => {
+                if (err.name === 'AbortError' || err.code === 'ERR_CANCELED' || axios.isCancel(err)) return;
                 setComments([]);
                 setAllLoaded(true);
             });
+        return () => controller.abort();
     }, [envUrl, query]);
 
     // retrieves the top comments
     useEffect(() => {
-        axios.get(`${envUrl}/api/comments/tops/${query.replace(/\//g, '%2F')}`)
+        const controller = new AbortController();
+        axios.get(`${envUrl}/api/comments/tops/${query.replace(/\//g, '%2F')}`, {
+            signal: controller.signal,
+        })
             .then(res => {
                 setTopComments(res.data.comments ?? []);
                 setTopLoaded(true);
             })
-            .catch(() => {
+            .catch((err) => {
+                if (err.name === 'AbortError' || err.code === 'ERR_CANCELED' || axios.isCancel(err)) return;
                 setTopComments([]);
                 setTopLoaded(true);
             });
+        return () => controller.abort();
     }, [envUrl, query]);
 
     // posts a comment
