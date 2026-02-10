@@ -83,6 +83,7 @@ const Main = props => {
                             </p>
                             <br />
                             <br />
+                            <WotdCard envUrl={envUrl} />
                             <p className="cdTagLine">
                                 <strong>
                                     Query a word, phrase, suffix, prefix or colloquialism above to get started!
