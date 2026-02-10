@@ -116,6 +116,15 @@ require('./routes/comment.routes')(app);
 
 // serve static assets in production (React build) — must be after API routes
 if (process.env.NODE_ENV === 'production') {
+    // Reject HEAD for page routes to stop link-checker/crawler traffic (real users use GET)
+    const staticPathPrefixes = ['/static/', '/images/', '/fonts/'];
+    app.use((req, res, next) => {
+        if (req.method !== 'HEAD') return next();
+        const p = (req.path || req.url || '').split('?')[0];
+        if (p.startsWith('/api/')) return next();
+        if (staticPathPrefixes.some(prefix => p.startsWith(prefix)) || p === '/favicon.ico' || p === '/manifest.json') return next();
+        res.status(405).set('Allow', 'GET').send('Method Not Allowed');
+    });
     app.use(express.static(path.join(__dirname, '../client/build')));
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
