@@ -2,7 +2,7 @@
 const origEmitWarning = process.emitWarning;
 process.emitWarning = function (warning, ...args) {
     const msg = typeof warning === 'string' ? warning : (warning && warning.message) || '';
-    if (msg.includes('url.parse') && msg.includes('DEP0169')) return;
+    if (msg.includes('DEP0169') || msg.includes('url.parse()')) return;
     return origEmitWarning.apply(process, [warning, ...args]);
 };
 
