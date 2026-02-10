@@ -73,13 +73,15 @@ const Main = props => {
                             <p className="cdTagLine">
                                 <strong>
                                     <i>
-                                        Language is art! 
+                                        The Writers Friend! 
                                     </i>
                                 </strong>
                             </p>
                             <WotdCard envUrl={envUrl} />
                             <p className="cdTagLine">
                                 <strong>
+                                    Language is art, and CarpeDiction is a gallery!
+                                    <br />
                                     Query a word, phrase, suffix, prefix or colloquialism above to get started!
                                 </strong>
                             </p>
