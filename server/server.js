@@ -38,6 +38,11 @@ app.use(cors({
         cb(null, false);
     },
 }));
+// Set a minimal Permissions-Policy with only standard features to avoid console errors from experimental/unrecognized directives (e.g. browsing-topics, run-ad-auction) that some hosts inject
+app.use((req, res, next) => {
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+    next();
+});
 console.log(`Server Type: ${process.env.NODE_ENV}`)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
