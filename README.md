@@ -34,5 +34,8 @@ The `render-postbuild` script installs and builds the frontend; the start comman
 
 ---
 
-NO LICENSE! THIS CODE IS NOT MEANT TO BE REUSED OR REPRODUCED!  
-Copyright ©2021 Zachery A. Bielicki, all rights reserved.
+## Copyright and use
+
+**Copyright ©2021 Zachery A. Bielicki. All rights reserved.**
+
+This codebase is proprietary. No license is granted to any person or entity. Use of this code—including but not limited to copying, modifying, distributing, or building upon it—is **not permitted** without explicit written permission from the copyright holder. The author retains complete ownership of all rights in and to this software.
