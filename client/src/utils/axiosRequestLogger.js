@@ -64,12 +64,25 @@ function redactBody(data) {
   }
 }
 
+function isExternalApi(fullUrl) {
+  try {
+    if (typeof window === 'undefined' || !fullUrl) return false;
+    const u = new URL(fullUrl, window.location.origin);
+    return u.origin !== window.location.origin;
+  } catch (_) {
+    return false;
+  }
+}
+
 // Request interceptor: log outgoing request (method, url, redacted headers/body)
 axios.interceptors.request.use(
   (config) => {
     try {
       const url = config.url || '';
       const fullUrl = config.baseURL ? `${config.baseURL.replace(/\/$/, '')}/${url.replace(/^\//, '')}` : url;
+      if (isExternalApi(fullUrl)) {
+        safeLog('log', '[external API]', config.method?.toUpperCase() || 'GET', redactUrl(fullUrl));
+      }
       safeLog('log', '[request]', config.method?.toUpperCase() || 'GET', redactUrl(fullUrl), {
         ...(config.headers && { headers: redactHeaders(config.headers) }),
         ...(config.params && Object.keys(config.params).length > 0 && { params: config.params }),
@@ -99,6 +112,9 @@ axios.interceptors.response.use(
       const fullUrl = response?.config?.baseURL
         ? `${response.config.baseURL.replace(/\/$/, '')}/${(response.config.url || '').replace(/^\//, '')}`
         : url;
+      if (isExternalApi(fullUrl)) {
+        safeLog('log', '[external API]', status, response?.config?.method?.toUpperCase() || 'GET', redactUrl(fullUrl));
+      }
       safeLog('log', '[response]', status, response?.config?.method?.toUpperCase() || 'GET', redactUrl(fullUrl));
     } catch (_) {
       // no-op
@@ -113,6 +129,9 @@ axios.interceptors.response.use(
         ? `${error.config.baseURL.replace(/\/$/, '')}/${(error.config.url || '').replace(/^\//, '')}`
         : url;
       const method = error?.config?.method?.toUpperCase() || 'GET';
+      if (isExternalApi(fullUrl)) {
+        safeLog('warn', '[external API]', status ?? error?.message ?? 'Network error', method, redactUrl(fullUrl));
+      }
       safeLog(
         'warn',
         '[response error]',

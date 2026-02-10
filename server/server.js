@@ -93,11 +93,12 @@ app.use((req, res, next) => {
         const pathSafe = safePath(req.originalUrl || req.url);
         const ip = req.ip || req.socket?.remoteAddress || '-';
         const forwarded = req.get('x-forwarded-for');
+        // Leftmost in X-Forwarded-For is the client; rightmost is the last proxy (what req.ip is with trust proxy)
+        const clientIp = forwarded ? forwarded.split(',')[0].trim() : ip;
         const referer = req.get('referer') || req.get('referrer') || '-';
         const ua = req.get('user-agent');
         const uaShort = ua ? (ua.length > 80 ? ua.slice(0, 77) + '...' : ua) : '-';
-        const from = forwarded ? `forwarded=${forwarded} ip=${ip}` : `ip=${ip}`;
-        console.log(`[${new Date().toISOString()}] ${req.method} ${pathSafe} ${res.statusCode} ${ms}ms ${from} referer=${referer} ua=${uaShort}`);
+        console.log(`[${new Date().toISOString()}] ${req.method} ${pathSafe} ${res.statusCode} ${ms}ms client=${clientIp} referer=${referer} ua=${uaShort}`);
         const p = (req.originalUrl || req.url).split('?')[0];
         if (req.method === 'GET' && (p.startsWith('/api/comments/retrieve/') || p.startsWith('/api/comments/tops/'))) {
             const query = decodeURIComponent(p.replace(/^\/api\/comments\/(?:retrieve|tops)\//, '') || '').trim();
@@ -145,8 +146,11 @@ dbReady
 // Scrapes WOTD and saves to the db (used on startup and on interval)
 function getWotd() {
     const Wotd = {};
-    axios.get('https://www.merriam-webster.com/word-of-the-day')
+    const extUrl = 'https://www.merriam-webster.com/word-of-the-day';
+    console.log(`[external API] GET ${extUrl}`);
+    axios.get(extUrl)
         .then(res => {
+            console.log(`[external API] GET ${extUrl} ${res.status}`);
             const html = res.data;
             const $ = cheerio.load(html);
             // First h1 is "Word of the Day"; the actual word is in the first h2
@@ -165,5 +169,7 @@ function getWotd() {
                     }
                 });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(`[external API] GET ${extUrl} error:`, err.message || err.code || err);
+        });
 }
